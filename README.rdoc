@@ -1,0 +1,100 @@
+== Expose
+
+Expose allows you to dynamically adjust the 'attr_accessible' or
+'attr_protected' of a model.  This is only for managing mass-assignment
+security, and not overall security.
+
+=== Model
+
+  The following would let you mass_assign :sometimes_important when the :state
+  is 'new' or 'pending'.
+
+  class Account < ActiveRecord::Base
+  
+    # name:string
+    # sometimes_important:string
+    # state:string ... example [:new, :pending, :closed]
+
+    expose :sometimes_important,
+      :if => Proc.new { |account| [:new,:pending].include?(account.state) }
+    
+    # same result as line above (just using)
+    expose :sometimes_important, :state => [:new, :pending]
+    
+    # similar to line above
+    expose :sometimes_important,
+      :unless => Proc.new { |account| [:closed].include?(account.state) }
+    
+    # same as line above
+    expose :sometimes_important, :not_state => :closed
+
+    # using whitelist strategy
+    attr_accessible :name
+    
+    # OR, using blacklist strategy
+    # attr_protected :sometimes_important 
+
+  end
+
+== Notes
+
+This gem has only been tested with Rails 3.1.rc3, but should work with Rails
+3.X. It only uses the hook :mass_assignment_authorizer.
+
+== Todo
+
+This gem is in the early stages of development, so use at your own risk.
+
+Plans/Ideas:
+  - maybe disable attr_protected.  Using this gem shows an interest in
+    mass-assignment security.  Why not ensure use of a whitelist only
+    strategy.
+  - add controller version (so that session data can be used, ie: role of
+    logged in user)
+  - add better error handling and option checking, maybe add some logging
+  - do not require ActiveRecord, but rather ActiveModel
+
+== Installation
+
+Install the gem:
+
+  gem install expose
+
+Or add Expose to your Gemfile and bundle it up:
+
+  gem 'expose'
+
+== Options
+
+'expose' handles a series of options. Those are:
+
+* :if * - When true, the attribute will be added to whitelist.
+
+* :unless * - When false, the attribute will be added to whitelist.
+
+* :state * - When in this state, the attribute will be added to whitelist.
+
+* :not_state * - When not in this state, the attribute will be added to
+  whitelist.
+
+== Maintainers
+
+* Mark G (http://github.com/attack)
+
+== Contributors
+
+* you
+
+== Influence
+
+* trusted-params (https://github.com/ryanb/trusted-params) -
+  An ActiveController only version, not compatible with Rails 3.X.
+
+== Bugs and Feedback
+
+If you discover any bugs or want to drop a line, feel free to create an issue
+on GitHub.
+
+http://github.com/attack/expose/issues
+
+MIT License. Copyright 2011 Mark G. http://github.com/attack
