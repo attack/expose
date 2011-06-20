@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Mark G"]
   s.email       = ["expose@attackcorp.com"]
   s.homepage    = "https://github.com/attack/expose"
-  s.summary     = %q{Simple dynamic configuration of attr_protected}
-  s.description = %q{Simple dynamic configuration of attr_protected}
+  s.summary     = %q{Simple dynamic configuration of mass-assignment security}
+  s.description = %q{Simple dynamic configuration of mass-assignment security, specifically attr_protected and attr_accessible}
 
   s.rubyforge_project = "expose"
 
