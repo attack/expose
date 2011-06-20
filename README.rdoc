@@ -10,6 +10,7 @@ security, and not overall security.
   is 'new' or 'pending'.
 
   class Account < ActiveRecord::Base
+    include Expose::Model
   
     # name:string
     # sometimes_important:string
@@ -46,6 +47,7 @@ This gem has only been tested with Rails 3.1.rc3, but should work with Rails
 This gem is in the early stages of development, so use at your own risk.
 
 Plans/Ideas:
+  - add 'protect' version, which does the opposite of 'expose'
   - maybe disable attr_protected.  Using this gem shows an interest in
     mass-assignment security.  Why not ensure use of a whitelist only
     strategy.
@@ -53,6 +55,9 @@ Plans/Ideas:
     logged in user)
   - add better error handling and option checking, maybe add some logging
   - do not require ActiveRecord, but rather ActiveModel
+  - not require adding 'include Expose::Model'.  When I do, the class variable
+    '_exposures' is shared by all subclasses of ActiveRecord::Base, and each
+    declared model then sees the same '_exposures'. 
 
 == Installation
 

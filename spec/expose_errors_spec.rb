@@ -6,10 +6,10 @@ describe 'Expose' do
     describe "initial setup (sanity check)" do
       before(:each) do
         class User < ActiveRecord::Base
+          include Expose::Model
           attr_protected :important
           attr_protected :sometimes_important
         end
-        User.send(:_exposures=, {})
       end
       subject { User.new }
     
@@ -23,6 +23,7 @@ describe 'Expose' do
       it "raises error" do
         expect { 
           class User < ActiveRecord::Base
+            include Expose::Model
             attr_protected :important
             attr_protected :sometimes_important
             expose :invalid_name
@@ -36,6 +37,7 @@ describe 'Expose' do
     describe "expose with double declaration" do
       before(:each) do
         class User < ActiveRecord::Base
+          include Expose::Model
           attr_protected :important
           attr_protected :sometimes_important
           expose :sometimes_important, :state => 'new'
@@ -51,7 +53,30 @@ describe 'Expose' do
         subject.send(:_exposures)[:sometimes_important].should_not include(:not_state)
         subject.send(:_exposures)[:sometimes_important][:state].should == 'open'
       end
+    end
+    
+    describe "expose two classes with no interferences" do
+      before(:each) do
+        class User < ActiveRecord::Base
+          include Expose::Model
+          attr_protected :important
+          attr_protected :sometimes_important
+          expose :sometimes_important, :state => 'open'
+        end
+        class Account < ActiveRecord::Base
+          include Expose::Model
+          attr_protected :important
+          attr_protected :sometimes_important
+          expose :important, :state => 'new'
+        end
+      end
       
+      it "keeps separate exposure lists" do
+        User.send(:_exposures).should include(:sometimes_important)
+        User.send(:_exposures).should_not include(:important)
+        Account.send(:_exposures).should include(:important)
+        Account.send(:_exposures).should_not include(:sometimes_important)
+      end
     end
     
   end

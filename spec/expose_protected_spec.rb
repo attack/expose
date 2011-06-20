@@ -6,10 +6,10 @@ describe 'Expose' do
     describe "initial setup" do
       before(:each) do
         class User < ActiveRecord::Base
+          include Expose::Model
           attr_protected :important
           attr_protected :sometimes_important
         end
-        User.send(:_exposures=, {})
       end
       subject { User.new }
     
@@ -22,6 +22,7 @@ describe 'Expose' do
     describe "expose with no options" do
       before(:each) do
         class User < ActiveRecord::Base
+          include Expose::Model
           attr_protected :important
           attr_protected :sometimes_important
           expose :sometimes_important
@@ -38,6 +39,7 @@ describe 'Expose' do
     describe "expose with :if" do
       before(:each) do
         class User < ActiveRecord::Base
+          include Expose::Model
           attr_protected :important
           attr_protected :sometimes_important
           expose :sometimes_important, :if => Proc.new { |user| user.name == 'example name' }
@@ -63,6 +65,7 @@ describe 'Expose' do
     describe "expose with :unless" do
       before(:each) do
         class User < ActiveRecord::Base
+          include Expose::Model
           attr_protected :important
           attr_protected :sometimes_important
           expose :sometimes_important, :unless => Proc.new { |user| user.name == 'example name' }
@@ -88,6 +91,7 @@ describe 'Expose' do
     describe "expose with :state" do
       before(:each) do
         class User < ActiveRecord::Base
+          include Expose::Model
           attr_protected :important
           attr_protected :sometimes_important
           expose :sometimes_important, :state => 'open'
@@ -113,6 +117,7 @@ describe 'Expose' do
     describe "expose with :not_state" do
       before(:each) do
         class User < ActiveRecord::Base
+          include Expose::Model
           attr_protected :important
           attr_protected :sometimes_important
           expose :sometimes_important, :not_state => 'closed'
@@ -138,6 +143,7 @@ describe 'Expose' do
     describe "allow multiple attributes in a single definition" do
       before(:each) do
         class User < ActiveRecord::Base
+          include Expose::Model
           attr_protected :important
           attr_protected :sometimes_important
           expose :important, :sometimes_important, :if => Proc.new { |user| user.name == 'example name' }

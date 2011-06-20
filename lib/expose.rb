@@ -8,7 +8,7 @@ module Expose
       base.class_eval do
         extend ClassMethods
         
-        class_attribute :_exposures
+        class_attribute :_exposures, :instance_writer => false
         self._exposures = Hash.new { |h,k| h[k] = [] }
       end
     end
@@ -30,19 +30,18 @@ module Expose
         #
         # :state + :not_state
         # include warning if any similarities in :state and :not_state, as they would cancel each other out
-        
-        config.each do |name|
-          if self.attribute_method?(name.to_sym)
+
+        config.each do |attr|
+          if self.attribute_method?(attr.to_sym)
             # if _exposures.has_key?(name.to_sym)
             #   # log duplication ?
             # end
-            _exposures[name.to_sym] = options
+            _exposures[attr.to_sym] = options
           else
-            raise "Expose: invalid attribute - #{name.to_s}"
+           raise "Expose: invalid attribute - #{name.to_s}"
           end
         end
       end
-    
     end
      
     protected
@@ -125,4 +124,8 @@ module Expose
   end
   
 end
-ActiveRecord::Base.class_eval { include Expose::Model }
+# This is currently commented out, and therefore you need to use
+# 'include Expose::Model' at the top of any subclass of 
+# ActiveRecord::Base where you want to use :expose.
+#
+#ActiveRecord::Base.class_eval { include Expose::Model }
