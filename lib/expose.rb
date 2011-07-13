@@ -8,8 +8,10 @@ module Expose
       base.class_eval do
         extend ClassMethods
         
-        class_attribute :_exposures, :instance_writer => false
-        self._exposures = Hash.new { |h,k| h[k] = [] }
+        unless respond_to?(:_exposures)
+          class_attribute :_exposures, :instance_writer => false
+          self._exposures = Hash.new { |h,k| h[k] = [] }
+        end
       end
     end
 
