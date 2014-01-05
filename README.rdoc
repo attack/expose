@@ -1,3 +1,5 @@
+<b>This gem is no longer maintained.</b>
+
 == Expose
 
 Expose allows you to dynamically adjust the 'attr_accessible' or
